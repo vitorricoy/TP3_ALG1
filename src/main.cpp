@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <cmath>
 
 using namespace std;
 
@@ -11,18 +12,23 @@ int main() {
     int d;
     // Tempo máximo para aplicação de descontos
     int t;
+
     // Lê as três variáveis
     cin >> n >> d >> t;
+
     // Declara o vetor que guarda os descontos para cada escala consecutiva
     vector<double> descontoPercentual(d);
     // Declara o vetor que guarda o tempo que leva o translado de cada escala
     vector<int> tempoViagem(n);
     // Declara o vetor que guarda o custo do bilhete de cada escala
     vector<double> custoBilhete(n);
+    // Soma tempo viagem
+    vector<int> somaTempoViagem(n+1);
 
     // Lê os valores de desconto
     for(int I=0; I<d; I++) {
-        cin >> descontoPercentual[I];
+        //cin >> descontoPercentual[I];
+        descontoPercentual[I] = 0;
         descontoPercentual[I]/=100;
     }
 
@@ -35,36 +41,42 @@ int main() {
 
     // Lê o tempo e preço do bilhete de cada escala
     for(int I=0; I<n; I++) {
-        cin >> tempoViagem[I] >> custoBilhete[I];
+        //cin >> tempoViagem[I] >> custoBilhete[I];
+        tempoViagem[I] = custoBilhete[I] = 1;
+    }
+    somaTempoViagem[0] = 0;
+    for(int I=1; I<=n; I++) {
+        somaTempoViagem[I] = tempoViagem[I-1] + somaTempoViagem[I-1];
     }
 
-    // Declara a matriz da programação dinâmica
-    double dp[2][d][t];
+    double dp[2][n+1];
 
-    // Inicializa os valores do caso base
-    for(int J=d-1; J>=0; J--) {
-        for(int K=t-1; K>=0; K--) {
-            dp[n%2][J][K] = 0;
-        }
+    for(int ultPego = n-1; ultPego>=0; ultPego--) {
+        dp[n%2][ultPego] = 0;
     }
 
-    // Implementa a equação de bellman para preencher a matriz dp
-    // Vale notar que, para utilizar menos espaço, apenas os valores 
-    // da escala anterior são salvos
-    for(int escala=n-1; escala>=0; escala--) {
-        for(int desconto=d-1; desconto>=0; desconto--) {
-            for(int tempoDesconto=t-1; tempoDesconto>=0; tempoDesconto--) {
-                double precoBilhete = (1.0-descontoPercentual[desconto])*custoBilhete[escala];
-                if(tempoDesconto+tempoViagem[escala] >= t || desconto == d-1) {
-                    dp[escala%2][desconto][tempoDesconto] = precoBilhete + dp[(escala+1)%2][0][0];
-                } else {
-                    dp[escala%2][desconto][tempoDesconto] = precoBilhete + min(dp[(escala+1)%2][0][0], dp[(escala+1)%2][desconto+1][tempoDesconto+tempoViagem[escala]]);
-                }
+    for(int at = n-1; at >= 0; at--) {
+        for(int ultPego = at; ultPego >= 0; ultPego--) {
+
+            int numeroDescontosConsecutivos = at-ultPego;
+            int tempoUltimoDesconto = somaTempoViagem[at]-somaTempoViagem[ultPego];
+
+            dp[at%2][ultPego] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[at];
+            if(tempoUltimoDesconto+tempoViagem[at] >= t || numeroDescontosConsecutivos == d-1) {
+                dp[at%2][ultPego] += dp[(at+1)%2][at+1];
+            } else {
+                dp[at%2][ultPego] += min(dp[(at+1)%2][at+1], dp[(at+1)%2][ultPego]);
             }
         }
     }
     
+    // Trunca o resultado para duas casas decimais
+    double resultado = dp[0][0];
+    resultado*=100;
+    resultado = trunc(resultado);
+    resultado = resultado/100;
+
     // Exibe o resultado calculado
-    cout << fixed << setprecision(2) << dp[0][0][0] << endl;
+    cout << fixed << setprecision(2) << resultado << endl;
     return 0;
 }
