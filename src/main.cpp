@@ -27,8 +27,7 @@ int main() {
 
     // Lê os valores de desconto
     for(int I=0; I<d; I++) {
-        //cin >> descontoPercentual[I];
-        descontoPercentual[I] = 0;
+        cin >> descontoPercentual[I];
         descontoPercentual[I]/=100;
     }
 
@@ -41,8 +40,7 @@ int main() {
 
     // Lê o tempo e preço do bilhete de cada escala
     for(int I=0; I<n; I++) {
-        //cin >> tempoViagem[I] >> custoBilhete[I];
-        tempoViagem[I] = custoBilhete[I] = 1;
+        cin >> tempoViagem[I] >> custoBilhete[I];
     }
     somaTempoViagem[0] = 0;
     for(int I=1; I<=n; I++) {
@@ -56,26 +54,22 @@ int main() {
     }
 
     for(int at = n-1; at >= 0; at--) {
-        for(int ultPego = at; ultPego >= 0; ultPego--) {
-
+        for(int ultPego = at; ultPego >= at-d+1; ultPego--) {
             int numeroDescontosConsecutivos = at-ultPego;
             int tempoUltimoDesconto = somaTempoViagem[at]-somaTempoViagem[ultPego];
-
             dp[at%2][ultPego] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[at];
-            if(tempoUltimoDesconto+tempoViagem[at] >= t || numeroDescontosConsecutivos == d-1) {
+            if(tempoUltimoDesconto+tempoViagem[at] >= t) {
                 dp[at%2][ultPego] += dp[(at+1)%2][at+1];
             } else {
                 dp[at%2][ultPego] += min(dp[(at+1)%2][at+1], dp[(at+1)%2][ultPego]);
             }
         }
     }
-    
     // Trunca o resultado para duas casas decimais
     double resultado = dp[0][0];
     resultado*=100;
     resultado = trunc(resultado);
     resultado = resultado/100;
-
     // Exibe o resultado calculado
     cout << fixed << setprecision(2) << resultado << endl;
     return 0;
