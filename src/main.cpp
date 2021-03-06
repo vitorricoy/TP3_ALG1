@@ -47,24 +47,25 @@ int main() {
         somaTempoViagem[I] = tempoViagem[I-1] + somaTempoViagem[I-1];
     }
 
-    double dp[2][n+1];
+    vector<vector<double> > dp(2, vector<double>(n+1, 0));
 
     for(int ultPego = n-1; ultPego>=0; ultPego--) {
         dp[n%2][ultPego] = 0;
     }
 
     for(int at = n-1; at >= 0; at--) {
-        for(int ultPego = at; ultPego >= at-d+1; ultPego--) {
+        for(int ultPego = at; ultPego >= 0; ultPego--) {
             int numeroDescontosConsecutivos = at-ultPego;
             int tempoUltimoDesconto = somaTempoViagem[at]-somaTempoViagem[ultPego];
             dp[at%2][ultPego] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[at];
-            if(tempoUltimoDesconto+tempoViagem[at] >= t) {
+            if(tempoUltimoDesconto+tempoViagem[at] >= t || numeroDescontosConsecutivos >= d-1) {
                 dp[at%2][ultPego] += dp[(at+1)%2][at+1];
             } else {
                 dp[at%2][ultPego] += min(dp[(at+1)%2][at+1], dp[(at+1)%2][ultPego]);
             }
         }
     }
+    
     // Trunca o resultado para duas casas decimais
     double resultado = dp[0][0];
     resultado*=100;
