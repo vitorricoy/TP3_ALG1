@@ -23,7 +23,7 @@ int main() {
     // Declara o vetor que guarda o custo do bilhete de cada escala
     vector<double> custoBilhete(n);
     // Vetor de soma de prefixo para o cálculo do valor da soma de um intervalo em tempo constante
-    vector<int> somaTempoViagem(n+1);
+    vector<int> somaPrefixoTempo(n+1);
 
     // Lê os valores de desconto
     for(int I=0; I<d; I++) {
@@ -44,9 +44,9 @@ int main() {
     }
 
     // Calcula o vetor de soma de prefixos do tempo das viagens
-    somaTempoViagem[0] = 0;
+    somaPrefixoTempo[0] = 0;
     for(int I=1; I<=n; I++) {
-        somaTempoViagem[I] = tempoViagem[I-1] + somaTempoViagem[I-1];
+        somaPrefixoTempo[I] = tempoViagem[I-1] + somaPrefixoTempo[I-1];
     }
 
     // Declara a matriz usada para guardar os resultados da programação dinâmica
@@ -63,7 +63,7 @@ int main() {
             // Número de escalas com desconto entre a escala atual e a escala em que o desconto se iniciou
             int numeroDescontosConsecutivos = escalaAtual-primeiraEscalaDesconto;
             // O tempo passado desde o embarque na primeira escala do desconto
-            int tempoUltimoDesconto = somaTempoViagem[escalaAtual]-somaTempoViagem[primeiraEscalaDesconto];
+            int tempoUltimoDesconto = somaPrefixoTempo[escalaAtual]-somaPrefixoTempo[primeiraEscalaDesconto];
             // Inicializa o custo da dp com o valor gasto na passagem da escala atual
             dp[escalaAtual%2][primeiraEscalaDesconto] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[escalaAtual];
             if(tempoUltimoDesconto+tempoViagem[escalaAtual] >= t || numeroDescontosConsecutivos >= d-1) {
