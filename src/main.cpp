@@ -53,7 +53,7 @@ int main() {
     // Foi usada uma otimização de espaço em que apenas os dados da última escala é guardado
     // Isso é possível pois é necessário apenas os dados da escala anterior para calcular os dados da seguinte
     // Os casos base da equação de Bellman já estão cobertos pela inicialização com 0.0
-    vector<vector<double> > dp(2, vector<double>(n+1, 0.0));
+    vector<vector<double> > pd(2, vector<double>(n+1, 0.0));
 	
     // Implementa a equação de Bellman da solução do problema
     for(int escalaAtual = n-1; escalaAtual >= 0; escalaAtual--) {
@@ -62,24 +62,24 @@ int main() {
         for(int primeiraEscalaDesconto = escalaAtual; primeiraEscalaDesconto >= primeiraEscalaComEfeito; primeiraEscalaDesconto--) {
             // Número de escalas com desconto entre a escala atual e a escala em que o desconto se iniciou
             int numeroDescontosConsecutivos = escalaAtual-primeiraEscalaDesconto;
-            // O tempo passado desde o embarque na primeira escala do desconto
+            // O tempo passado desde o embarque na primeira escala do desconto até o embarque na escala atual
             int tempoUltimoDesconto = somaPrefixoTempo[escalaAtual]-somaPrefixoTempo[primeiraEscalaDesconto];
-            // Inicializa o custo da dp com o valor gasto na passagem da escala atual
-            dp[escalaAtual%2][primeiraEscalaDesconto] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[escalaAtual];
+            // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
+            pd[escalaAtual%2][primeiraEscalaDesconto] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[escalaAtual];
             if(tempoUltimoDesconto+tempoViagem[escalaAtual] >= t || numeroDescontosConsecutivos >= d-1) {
                 // Caso não seja possível continuar o desconto acumulado para a próxima escala
                 // Adiciona o custo a partir da próxima escala iniciando um novo ciclo de descontos
-                dp[escalaAtual%2][primeiraEscalaDesconto] += dp[(escalaAtual+1)%2][escalaAtual+1];
+                pd[escalaAtual%2][primeiraEscalaDesconto] += pd[(escalaAtual+1)%2][escalaAtual+1];
             } else {
                 // Caso seja possível continuar o desconto acumulado para a próxima escala
                 // Escolhe entre iniciar um novo ciclo de descontos ou continuar com o desconto atual
-                dp[escalaAtual%2][primeiraEscalaDesconto] += min(dp[(escalaAtual+1)%2][escalaAtual+1], dp[(escalaAtual+1)%2][primeiraEscalaDesconto]);
+                pd[escalaAtual%2][primeiraEscalaDesconto] += min(pd[(escalaAtual+1)%2][escalaAtual+1], pd[(escalaAtual+1)%2][primeiraEscalaDesconto]);
             }
         }
     }
     
     // Trunca o resultado para duas casas decimais
-    double resultado = dp[0][0];
+    double resultado = pd[0][0];
     resultado*=100;
     resultado = trunc(resultado);
     resultado = resultado/100;
