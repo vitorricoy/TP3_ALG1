@@ -47,14 +47,14 @@ int main() {
         somaTempoViagem[I] = tempoViagem[I-1] + somaTempoViagem[I-1];
     }
 
-    vector<vector<double> > dp(2, vector<double>(n+1, 0));
+    vector<vector<double> > dp(2, vector<double>(n+1, 0.0));
 
     for(int ultPego = n-1; ultPego>=0; ultPego--) {
         dp[n%2][ultPego] = 0;
     }
-
+	
     for(int at = n-1; at >= 0; at--) {
-        for(int ultPego = at; ultPego >= 0; ultPego--) {
+        for(int ultPego = at; ultPego >= max(0, at-d+1); ultPego--) {
             int numeroDescontosConsecutivos = at-ultPego;
             int tempoUltimoDesconto = somaTempoViagem[at]-somaTempoViagem[ultPego];
             dp[at%2][ultPego] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[at];
