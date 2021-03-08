@@ -31,6 +31,11 @@ int main() {
         descontoPercentual[I]/=100;
     }
 
+    // Lê o tempo e preço do bilhete de cada escala
+    for(int I=0; I<n; I++) {
+        cin >> tempoViagem[I] >> custoBilhete[I];
+    }
+    
     // Soma os valores do desconto com os anteriores a ele para cada  
     // valor de desconto indicar o desconto total ao ser acumulado
     for(int I=1; I<d; I++) {
@@ -38,10 +43,6 @@ int main() {
         descontoPercentual[I] = min(descontoPercentual[I], 1.0);
     }
 
-    // Lê o tempo e preço do bilhete de cada escala
-    for(int I=0; I<n; I++) {
-        cin >> tempoViagem[I] >> custoBilhete[I];
-    }
 
     // Calcula o vetor de soma de prefixos do tempo das viagens
     somaPrefixoTempo[0] = 0;
