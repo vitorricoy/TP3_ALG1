@@ -66,6 +66,7 @@ int main() {
             // Número de escalas com desconto entre a escala atual e a escala em que o desconto se iniciou
             int numeroDescontosConsecutivos = escalaAtual-primeiraEscalaDesconto;
             // O tempo passado desde o embarque na primeira escala do desconto até o embarque na escala atual
+            // Ou seja, a soma dos tempos de viagem do intervalor [primeiraEscalaDesconto, escalaAtual)
             int tempoUltimoDesconto = somaPrefixoTempo[escalaAtual]-somaPrefixoTempo[primeiraEscalaDesconto];
             // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
             pd[escalaAtual%2][primeiraEscalaDesconto] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[escalaAtual];
