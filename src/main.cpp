@@ -28,6 +28,7 @@ int main() {
     // Lê os valores de desconto
     for(int I=0; I<d; I++) {
         cin >> descontoPercentual[I];
+        // Converte o valor do desconto de porcentagem para decimal
         descontoPercentual[I]/=100;
     }
 
@@ -40,6 +41,7 @@ int main() {
     // valor de desconto indicar o desconto total ao ser acumulado
     for(int I=1; I<d; I++) {
         descontoPercentual[I] += descontoPercentual[I-1];
+        // Caso um desconto chegaria a mais de 100%, o mantêm no 100% de desconto
         descontoPercentual[I] = min(descontoPercentual[I], 1.0);
     }
 
