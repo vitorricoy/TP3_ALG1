@@ -60,24 +60,33 @@ int main() {
 	
     // Implementa a equação de Bellman da solução do problema
     for(int escalaAtual = n-1; escalaAtual >= 0; escalaAtual--) {
-        // Iteração acontece de escala atual até a primeira escala que pode ter um efeito na escala atual
-        int primeiraEscalaComEfeito = max(0, escalaAtual-d+1);
-        for(int primeiraEscalaDesconto = escalaAtual; primeiraEscalaDesconto >= primeiraEscalaComEfeito; primeiraEscalaDesconto--) {
+        // Iteração acontece de escala atual até a primeira escala, que podem ser onde se iniciou o desconto
+        for(int escalaDesconto = escalaAtual; escalaDesconto >= 0; escalaDesconto--) {
             // Número de escalas com desconto entre a escala atual e a escala em que o desconto se iniciou
-            int numeroDescontosConsecutivos = escalaAtual-primeiraEscalaDesconto;
+            int numeroDescontosConsecutivos = escalaAtual-escalaDesconto;
             // O tempo passado desde o embarque na primeira escala do desconto até o embarque na escala atual
-            // Ou seja, a soma dos tempos de viagem do intervalo [primeiraEscalaDesconto, escalaAtual)
-            int tempoUltimoDesconto = somaPrefixoTempo[escalaAtual]-somaPrefixoTempo[primeiraEscalaDesconto];
-            // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
-            pd[escalaAtual%2][primeiraEscalaDesconto] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[escalaAtual];
-            if(tempoUltimoDesconto+tempoViagem[escalaAtual] >= t || numeroDescontosConsecutivos >= d-1) {
-                // Caso não seja possível continuar o desconto acumulado para a próxima escala
-                // Adiciona o custo a partir da próxima escala iniciando um novo ciclo de descontos
-                pd[escalaAtual%2][primeiraEscalaDesconto] += pd[(escalaAtual+1)%2][escalaAtual+1];
+            // Ou seja, a soma dos tempos de viagem do intervalo [escalaDesconto, escalaAtual)
+            int tempoUltimoDesconto = somaPrefixoTempo[escalaAtual]-somaPrefixoTempo[escalaDesconto];
+
+            // Verifica se o tempo gasto entre escalaDesconto e escalaAtual permite que o desconto seja usado
+            // e se não se atingiu o número máximo de descontos entre escalaDesconto e escalaAtual 
+            if(tempoUltimoDesconto < t && numeroDescontosConsecutivos < d) {    
+                // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
+                pd[escalaAtual%2][escalaDesconto] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[escalaAtual];
+                if(tempoUltimoDesconto+tempoViagem[escalaAtual] >= t || numeroDescontosConsecutivos >= d-1) {
+                    // Caso não seja possível continuar o desconto acumulado para a próxima escala
+                    // Adiciona o custo a partir da próxima escala iniciando um novo ciclo de descontos
+                    pd[escalaAtual%2][escalaDesconto] += pd[(escalaAtual+1)%2][escalaAtual+1];
+                } else {
+                    // Caso seja possível continuar o desconto acumulado para a próxima escala
+                    // Escolhe entre iniciar um novo ciclo de descontos ou continuar com o desconto atual
+                    pd[escalaAtual%2][escalaDesconto] += min(pd[(escalaAtual+1)%2][escalaAtual+1], pd[(escalaAtual+1)%2][escalaDesconto]);
+                }
             } else {
-                // Caso seja possível continuar o desconto acumulado para a próxima escala
-                // Escolhe entre iniciar um novo ciclo de descontos ou continuar com o desconto atual
-                pd[escalaAtual%2][primeiraEscalaDesconto] += min(pd[(escalaAtual+1)%2][escalaAtual+1], pd[(escalaAtual+1)%2][primeiraEscalaDesconto]);
+                // É impossível se ter um desconto para escalaAtual iniciado em escalaDesconto
+                // Isso acontece pelo tempo de transporte entre essas escalas exceder o tempo máximo de um desconto
+                // ou por se ter atingido o número máximo de descontos consecutivos
+                pd[escalaAtual%2][escalaDesconto] = 1e20; // 1e20 usado como infinito
             }
         }
     }
