@@ -63,17 +63,17 @@ int main() {
         // Iteração acontece de escala atual até a primeira escala, que podem ser onde se iniciou o desconto
         for(int escalaDesconto = escalaAtual; escalaDesconto >= 0; escalaDesconto--) {
             // Número de escalas com desconto entre a escala atual e a escala em que o desconto se iniciou
-            int numeroDescontosConsecutivos = escalaAtual-escalaDesconto;
+            int numeroDescontos = escalaAtual-escalaDesconto+1;
             // O tempo passado desde o embarque na primeira escala do desconto até o embarque na escala atual
             // Ou seja, a soma dos tempos de viagem do intervalo [escalaDesconto, escalaAtual)
             int tempoUltimoDesconto = somaPrefixoTempo[escalaAtual]-somaPrefixoTempo[escalaDesconto];
 
             // Verifica se o tempo gasto entre escalaDesconto e escalaAtual permite que o desconto seja usado
             // e se não se atingiu o número máximo de descontos entre escalaDesconto e escalaAtual 
-            if(tempoUltimoDesconto < t && numeroDescontosConsecutivos < d) {    
+            if(tempoUltimoDesconto < t && numeroDescontos <= d) {    
                 // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
-                pd[escalaAtual%2][escalaDesconto] = (1.0-descontoPercentual[numeroDescontosConsecutivos])*custoBilhete[escalaAtual];
-                if(tempoUltimoDesconto+tempoViagem[escalaAtual] >= t || numeroDescontosConsecutivos >= d-1) {
+                pd[escalaAtual%2][escalaDesconto] = (1.0-descontoPercentual[numeroDescontos-1])*custoBilhete[escalaAtual];
+                if(tempoUltimoDesconto+tempoViagem[escalaAtual] >= t || numeroDescontos+1 > d) {
                     // Caso não seja possível continuar o desconto acumulado para a próxima escala
                     // Adiciona o custo a partir da próxima escala iniciando um novo ciclo de descontos
                     pd[escalaAtual%2][escalaDesconto] += pd[(escalaAtual+1)%2][escalaAtual+1];
