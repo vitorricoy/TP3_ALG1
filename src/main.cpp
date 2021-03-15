@@ -73,15 +73,8 @@ int main() {
             if(tempoUltimoDesconto < t && numeroDescontos <= d) {    
                 // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
                 pd[escalaAtual%2][escalaDesconto] = (1.0-descontoPercentual[numeroDescontos-1])*custoBilhete[escalaAtual];
-                if(tempoUltimoDesconto+tempoViagem[escalaAtual] >= t || numeroDescontos+1 > d) {
-                    // Caso não seja possível continuar o desconto acumulado para a próxima escala
-                    // Adiciona o custo a partir da próxima escala iniciando um novo ciclo de descontos
-                    pd[escalaAtual%2][escalaDesconto] += pd[(escalaAtual+1)%2][escalaAtual+1];
-                } else {
-                    // Caso seja possível continuar o desconto acumulado para a próxima escala
-                    // Escolhe entre iniciar um novo ciclo de descontos ou continuar com o desconto atual
-                    pd[escalaAtual%2][escalaDesconto] += min(pd[(escalaAtual+1)%2][escalaAtual+1], pd[(escalaAtual+1)%2][escalaDesconto]);
-                }
+                // Escolhe entre iniciar um novo ciclo de descontos ou continuar com o desconto atual
+                pd[escalaAtual%2][escalaDesconto] += min(pd[(escalaAtual+1)%2][escalaAtual+1], pd[(escalaAtual+1)%2][escalaDesconto]);
             } else {
                 // É impossível se ter um desconto para escalaAtual iniciado em escalaDesconto
                 // Isso acontece pelo tempo de transporte entre essas escalas exceder o tempo máximo de um desconto
