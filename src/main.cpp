@@ -56,24 +56,24 @@ int main() {
     // Declara a matriz usada para guardar os resultados da programação dinâmica
     // Foi usada uma otimização de espaço em que apenas os dados da última escala é guardado
     // Isso é possível pois é necessário apenas os dados da escala anterior para calcular os dados da seguinte
-    // Os casos base da equação de Bellman já estão cobertos pela inicialização com 0.0
+    // O caso base da equação de Bellman já está cobertos pela inicialização com 0.0
     vector<vector<double> > pd(2, vector<double>(n+1, 0.0));
 	
     // Implementa a equação de Bellman da solução do problema
     for(int escalaAtual = n-1; escalaAtual >= 0; escalaAtual--) {
-        // Iteração acontece de escala atual até a primeira escala, que podem ser onde se iniciou o desconto
+        // Iteração acontece de escala atual até a primeira escala, que pode ser onde se iniciou o desconto
         for(int escalaDesconto = escalaAtual; escalaDesconto >= 0; escalaDesconto--) {
             // Número de escalas com desconto entre a escala atual e a escala em que o desconto se iniciou
-            int numeroDescontos = escalaAtual-escalaDesconto+1;
+            int descontosJaUsados = escalaAtual-escalaDesconto;
             // O tempo passado desde o embarque na primeira escala do desconto até o embarque na escala atual
             // Ou seja, a soma dos tempos de viagem do intervalo [escalaDesconto, escalaAtual)
             int tempoUltimoDesconto = somaPrefixoTempo[escalaAtual]-somaPrefixoTempo[escalaDesconto];
-
+            
             // Verifica se o tempo gasto entre escalaDesconto e escalaAtual permite que o desconto seja usado
             // e se não se atingiu o número máximo de descontos entre escalaDesconto e escalaAtual 
-            if(tempoUltimoDesconto < t && numeroDescontos <= d) {    
+            if(tempoUltimoDesconto < t && descontosJaUsados < d) {    
                 // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
-                pd[escalaAtual%2][escalaDesconto] = (1.0-descontoPercentual[numeroDescontos-1])*custoBilhete[escalaAtual];
+                pd[escalaAtual%2][escalaDesconto] = (1.0-descontoPercentual[descontosJaUsados])*custoBilhete[escalaAtual];
                 // Escolhe entre iniciar um novo ciclo de descontos ou continuar com o desconto atual
                 pd[escalaAtual%2][escalaDesconto] += min(pd[(escalaAtual+1)%2][escalaAtual+1], pd[(escalaAtual+1)%2][escalaDesconto]);
             } else {
