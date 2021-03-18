@@ -6,6 +6,12 @@
 
 using namespace std;
 
+// Retorna o valor da soma do intervalo [inicio, fim] de um vetor de soma de prefixos
+// 'vetorSoma' é 1-based, já 'inicio' e 'fim' são 0-based
+int calculaSomaIntervalo(int inicio, int fim, vector<int>& vetorSoma) {
+    return vetorSoma[fim+1]-vetorSoma[inicio];
+}
+
 int main() {
     // Quantidade de escalas
     int n;
@@ -65,9 +71,9 @@ int main() {
         for(int escalaDesconto = escalaAtual; escalaDesconto >= 0; escalaDesconto--) {
             // Número de escalas com desconto entre a escala atual e a escala em que o desconto se iniciou
             int descontosJaUsados = escalaAtual-escalaDesconto;
-            // O tempo passado desde o embarque na primeira escala do desconto até o embarque na escala atual
+            // Calcula o tempo passado desde o embarque na primeira escala do desconto até o embarque na escala atual
             // Ou seja, a soma dos tempos de viagem do intervalo [escalaDesconto, escalaAtual)
-            int tempoUltimoDesconto = somaPrefixoTempo[escalaAtual]-somaPrefixoTempo[escalaDesconto];
+            int tempoUltimoDesconto = calculaSomaIntervalo(escalaDesconto, escalaAtual-1, somaPrefixoTempo);
             
             // Verifica se o tempo gasto entre escalaDesconto e escalaAtual permite que o desconto seja usado
             // e se não se atingiu o número máximo de descontos entre escalaDesconto e escalaAtual 
