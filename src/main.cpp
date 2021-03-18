@@ -54,6 +54,7 @@ int main() {
 
 
     // Calcula o vetor de soma de prefixos do tempo das viagens
+    // Vetor 0-based para facilitar o cálculo da soma de um intervalo
     somaPrefixoTempo[0] = 0;
     for(int I=1; I<=n; I++) {
         somaPrefixoTempo[I] = tempoViagem[I-1] + somaPrefixoTempo[I-1];
@@ -75,8 +76,8 @@ int main() {
             // Ou seja, a soma dos tempos de viagem do intervalo [escalaDesconto, escalaAtual)
             int tempoUltimoDesconto = calculaSomaIntervalo(escalaDesconto, escalaAtual-1, somaPrefixoTempo);
             
-            // Verifica se o tempo gasto entre escalaDesconto e escalaAtual permite que o desconto seja usado
-            // e se não se atingiu o número máximo de descontos entre escalaDesconto e escalaAtual 
+            // Verifica se o tempo gasto e o número de descontos entre escalaDesconto e escalaAtual
+            // permite que o desconto seja usado
             if(tempoUltimoDesconto < t && descontosJaUsados < d) {    
                 // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
                 pd[escalaAtual%2][escalaDesconto] = (1.0-descontoPercentual[descontosJaUsados])*custoBilhete[escalaAtual];
