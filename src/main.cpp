@@ -63,16 +63,16 @@ int main() {
     // Foi usada uma otimização de espaço em que apenas os dados da última escala é guardado
     // Isso é possível pois é necessário apenas os dados da escala anterior para calcular os dados da seguinte
     // O caso base da equação de Bellman já está cobertos pela inicialização com 0.0
-    vector<vector<double> > pd(2, vector<double>(d, 0.0));
+    vector<vector<double> > pd(2, vector<double>(d+1, 0.0));
 	
     // Implementa a equação de Bellman da solução do problema
     for(int escalaAtual = n-1; escalaAtual >= 0; escalaAtual--) {
         // Itera pelos possíveis números de descontos já utilizados no ciclo de descontos atual
-        for(int descontosUsados = d-1; descontosUsados >= 0; descontosUsados--) {
+        for(int descontosUsados = d; descontosUsados >= 0; descontosUsados--) {
             // Calcula a escala em que o desconto se iniciou
             int escalaDesconto = escalaAtual-descontosUsados;
             // Se o desconto teria se iniciado em uma escala inválida, temos um caso inválido
-            if(escalaDesconto < 0) {
+            if(escalaDesconto < 0 || descontosUsados == d) {
                 pd[escalaAtual%2][descontosUsados] = 1e20; // 1e20 usado como infinito
                 continue;
             }
