@@ -2,7 +2,6 @@
 #include <vector>
 #include <iomanip>
 #include <cmath>
-#include <sstream>
 
 using namespace std;
 
@@ -91,14 +90,7 @@ int main() {
         }
     }
     
-    // Trunca o resultado para duas casas decimais
-    double resultado = pd[0][0];
-    stringstream ss;
-    ss << fixed;
-    ss.precision(3);
-    ss << resultado;
-    string resposta = ss.str().substr(0, ss.str().size()-1);
-    // Exibe o resultado calculado
-    cout << resposta << endl;
+    // Exibe o resultado calculado com duas casas decimais
+    cout << fixed << setprecision(2) << resposta << endl;
     return 0;
 }
