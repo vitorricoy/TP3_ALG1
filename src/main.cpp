@@ -90,7 +90,10 @@ int main() {
             }
         }
     }
-    
+
+    // Salva a resposta obtida pela programação dinâmica
+    double resposta = pd[0][0];
+
     // Exibe o resultado calculado com duas casas decimais
     cout << fixed << setprecision(2) << resposta << endl;
     return 0;
