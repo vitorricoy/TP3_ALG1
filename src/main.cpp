@@ -71,23 +71,24 @@ int main() {
         for(int descontosUsados = d-1; descontosUsados >= 0; descontosUsados--) {
             // Calcula a escala em que o desconto se iniciou
             int escalaDesconto = escalaAtual-descontosUsados;
+            // Se o desconto teria se iniciado em uma escala inválida, temos um caso inválido
             if(escalaDesconto < 0) {
+                pd[escalaAtual%2][descontosUsados] = 1e20; // 1e20 usado como infinito
                 continue;
             }
             // Calcula o tempo passado desde o embarque na primeira escala do desconto até o embarque na escala atual
             // Ou seja, a soma dos tempos de viagem do intervalo [escalaDesconto, escalaAtual)
             int tempoUltimoDesconto = calculaSomaIntervalo(escalaDesconto, escalaAtual-1, somaPrefixoTempo);
             
-            // Verifica se o tempo gasto e o número de descontos entre escalaDesconto e escalaAtual
-            // permite que o desconto seja usado
+            // Verifica se o tempo gasto e o número de descontos entre 'escalaDesconto' e 'escalaAtual' permite que o desconto seja usado
             if(tempoUltimoDesconto < t) {    
                 // Inicializa o valor dessa instância com o valor gasto na passagem da escala atual
                 pd[escalaAtual%2][descontosUsados] = (1.0-descontoPercentual[descontosUsados])*custoBilhete[escalaAtual];
                 // Escolhe entre iniciar um novo ciclo de descontos ou continuar com o desconto atual
                 pd[escalaAtual%2][descontosUsados] += min(pd[(escalaAtual+1)%2][0], pd[(escalaAtual+1)%2][descontosUsados+1]);
             } else {
-                // É impossível que a 'escalaAtual' tenha tido 'descontosUsados' descontos consecutivos
-                // Isso acontece pelo tempo de transporte entre essas escalas exceder o tempo máximo de um desconto
+                // É impossível que 'escalaAtual' tenha tido 'descontosUsados' descontos consecutivos
+                // Isso acontece pelo tempo de transporte entre essas escalas exceder o tempo máximo de duração um desconto
                 pd[escalaAtual%2][descontosUsados] = 1e20; // 1e20 usado como infinito
             }
         }
