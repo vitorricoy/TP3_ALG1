@@ -60,8 +60,8 @@ int main() {
     }
 
     // Declara a matriz usada para guardar os resultados da programação dinâmica
-    // Foi usada uma otimização de espaço em que apenas os dados da última escala é guardado
-    // Isso é possível pois é necessário apenas os dados da escala anterior para calcular os dados da seguinte
+    // Foi usada uma otimização de espaço em que apenas os dados da escala atual e da anterior são guardados
+    // Isso é possível pois precisamos apenas dos dados da escala anterior para calcular os dados da seguinte
     // O caso base da equação de Bellman já está cobertos pela inicialização com 0.0
     vector<vector<double> > pd(2, vector<double>(d+1, 0.0));
 	
